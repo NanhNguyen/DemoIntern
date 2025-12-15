@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:internship_demo/ui/screens/intro/presentation/screens/intro_screen.dart';
+import 'package:internship_demo/ui/screens/intro/intro_screen.dart';
 import 'package:internship_demo/ui/navigation/routes/app_router.dart';
 
 final _appRouter = AppRouter();
