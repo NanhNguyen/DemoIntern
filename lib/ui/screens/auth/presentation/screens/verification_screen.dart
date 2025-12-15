@@ -2,14 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:internship_demo/features/auth/bloc/login/login_bloc.dart';
-import 'package:internship_demo/features/auth/bloc/login/login_event.dart';
-import 'package:internship_demo/features/auth/bloc/login/login_state.dart';
+import 'package:internship_demo/ui/screens/auth/bloc/login/login_bloc.dart';
+import 'package:internship_demo/ui/screens/auth/bloc/login/login_event.dart';
+import 'package:internship_demo/ui/screens/auth/bloc/login/login_state.dart';
 
-import 'package:internship_demo/features/auth/data/auth_api.dart';
+import 'package:internship_demo/ui/screens/auth/data/auth_api.dart';
 
-import 'package:internship_demo/features/auth/repo/auth_repository.dart';
-import 'package:internship_demo/routes/app_router.dart';
+import 'package:internship_demo/ui/screens/auth/repo/auth_repository.dart';
+import 'package:internship_demo/ui/navigation/routes/app_router.dart';
 
 @RoutePage()
 class VerificationScreen extends StatelessWidget {

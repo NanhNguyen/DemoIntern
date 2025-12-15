@@ -1,5 +1,5 @@
-import 'package:internship_demo/features/auth/data/auth_api.dart';
-import 'package:internship_demo/features/auth/model/user_model.dart';
+import 'package:internship_demo/ui/screens/auth/data/auth_api.dart';
+import 'package:internship_demo/ui/screens/auth/model/user_model.dart';
 
 class AuthRepository {
   final AuthApi api;

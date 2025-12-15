@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:internship_demo/features/auth/presentation/screens/login_screen.dart';
-import 'package:internship_demo/features/auth/presentation/screens/otp_screen.dart';
-import 'package:internship_demo/features/auth/presentation/screens/register_screen.dart';
-import '../features/auth/presentation/screens/verification_screen.dart';
-import '../../features/intro/presentation/screens/intro_screen.dart';
+import 'package:internship_demo/ui/screens/auth/presentation/screens/login_screen.dart';
+import 'package:internship_demo/ui/screens/auth/presentation/screens/otp_screen.dart';
+import 'package:internship_demo/ui/screens/auth/presentation/screens/register_screen.dart';
+import '../../screens/auth/presentation/screens/verification_screen.dart';
+import '../../screens/intro/presentation/screens/intro_screen.dart';
 import 'package:flutter/material.dart';
 
 part 'app_router.gr.dart';

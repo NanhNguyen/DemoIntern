@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:internship_demo/features/auth/repo/auth_repository.dart';
+import 'package:internship_demo/ui/screens/auth/repo/auth_repository.dart';
 import 'register_event.dart';
 import 'register_state.dart';
 
