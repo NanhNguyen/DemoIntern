@@ -50,12 +50,21 @@ class VerificationScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 6),
-                    const Text(
-                      '2FA Verification',
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              context.router.pop();
+                            },
+                            icon: const Icon(Icons.arrow_back_ios)),
+                        const Text(
+                          '2FA Verification',
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 6),
                     const Text('Hello, Welcome back to your account.'),
@@ -75,8 +84,8 @@ class VerificationScreen extends StatelessWidget {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () => context.read<LoginBloc>().add(
-                                    ToggleMethod(toEmail: true),
-                                  ),
+                                        ToggleMethod(toEmail: true),
+                                      ),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 12,
@@ -94,8 +103,8 @@ class VerificationScreen extends StatelessWidget {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () => context.read<LoginBloc>().add(
-                                    ToggleMethod(toEmail: false),
-                                  ),
+                                        ToggleMethod(toEmail: false),
+                                      ),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 12,
@@ -164,8 +173,8 @@ class VerificationScreen extends StatelessWidget {
                           onPressed: state.isSubmitting
                               ? null
                               : () => context.read<LoginBloc>().add(
-                                  RequestOtpPressed(),
-                                ),
+                                    RequestOtpPressed(),
+                                  ),
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 48),
                           ),
