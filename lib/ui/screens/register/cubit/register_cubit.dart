@@ -7,16 +7,33 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   RegisterCubit(this.repository) : super(RegisterState());
 
-  Future<void> submit(String name, String email, String password) async {
-    emit(state.copyWith(isLoading: true, errorMessage: null, isSuccess: false));
+  Future<void> submit(
+    String name,
+    String email,
+    String password,
+  ) async {
+    emit(state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      isSuccess: false,
+    ));
     try {
-      await repository.register(name, email, password);
-      emit(state.copyWith(isSuccess: true, isLoading: false));
+      await repository.register(
+        name,
+        email,
+        password,
+      );
+      emit(state.copyWith(
+        isSuccess: true,
+        isLoading: false,
+      ));
     } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString(), isLoading: false));
+      emit(state.copyWith(
+        errorMessage: e.toString(),
+        isLoading: false,
+      ));
     }
   }
 
-  // (Tuỳ chọn) nếu muốn reset state về initial
   void reset() => emit(RegisterState());
 }
