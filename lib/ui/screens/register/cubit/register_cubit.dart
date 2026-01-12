@@ -1,22 +1,22 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:internship_demo/ui/screens/auth/repo/auth_repository.dart';
+import 'package:internship_demo/data/repository/auth_repository.dart';
 import 'register_state.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
   final AuthRepository repository;
 
-  RegisterCubit(this.repository) : super(RegisterInitial());
+  RegisterCubit(this.repository) : super(RegisterState());
 
   Future<void> submit(String name, String email, String password) async {
-    emit(RegisterLoading());
+    emit(state.copyWith(isLoading: true, errorMessage: null, isSuccess: false));
     try {
       await repository.register(name, email, password);
-      emit(RegisterSuccess());
+      emit(state.copyWith(isSuccess: true, isLoading: false));
     } catch (e) {
-      emit(RegisterFailure(e.toString()));
+      emit(state.copyWith(errorMessage: e.toString(), isLoading: false));
     }
   }
 
   // (Tuỳ chọn) nếu muốn reset state về initial
-  void reset() => emit(RegisterInitial());
+  void reset() => emit(RegisterState());
 }

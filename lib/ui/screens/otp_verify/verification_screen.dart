@@ -2,13 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:internship_demo/ui/screens/login/login/login_bloc.dart';
-import 'package:internship_demo/ui/screens/login/login/login_event.dart';
-import 'package:internship_demo/ui/screens/login/login/login_state.dart';
+import 'package:internship_demo/data/api/api_client.dart';
+import 'package:internship_demo/data/api/auth_api.dart';
+import 'package:internship_demo/data/repository/auth_repository.dart';
+import 'package:internship_demo/foundation/storage/token_storage.dart';
 
-import 'package:internship_demo/data/auth_api.dart';
-
-import 'package:internship_demo/ui/screens/auth/repo/auth_repository.dart';
+import 'package:internship_demo/ui/screens/login/cubit/login_cubit.dart';
+import 'package:internship_demo/ui/screens/login/cubit/login_state.dart';
 import 'package:internship_demo/ui/navigation/routes/app_router.dart';
 
 @RoutePage()
@@ -17,218 +17,125 @@ class VerificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Inject repository rõ ràng
-    final authRepository = AuthRepository(api: AuthApi());
+    final authRepository = AuthRepository(AuthApi(ApiClient()), TokenStorage());
 
     return BlocProvider(
-      create: (_) => LoginBloc(authRepository: AuthRepository(api: AuthApi())),
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: BlocListener<LoginBloc, LoginState>(
-              listenWhen: (prev, curr) =>
-                  prev.otpSent != curr.otpSent || prev.error != curr.error,
-              listener: (context, state) {
-                if (state.otpSent) {
-                  context.router.push(
-                    OtpRoute(
-                      contact: state.input,
-                      isPhone: state.method == LoginMethod.phone,
-                    ),
-                  );
-                }
+      create: (_) => LoginCubit(authRepository),
+      child: const _LoginView(),
+    );
+  }
+}
 
-                if (state.error != null) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(state.error!)));
-                }
-              },
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              context.router.pop();
+class _LoginView extends StatefulWidget {
+  const _LoginView();
+
+  @override
+  State<_LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<_LoginView> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: BlocListener<LoginCubit, LoginState>(
+            listener: (context, state) {
+              if (state.isSuccess) {
+                context.router.replace(const HomeRoute());
+              }
+
+              if (state.errorMessage != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.errorMessage!)),
+                );
+              }
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Login',
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text('Welcome back 👋'),
+                const SizedBox(height: 32),
+
+                /// Email
+                TextField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                /// Password
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+
+                /// Login button
+                BlocBuilder<LoginCubit, LoginState>(
+                  builder: (context, state) {
+                    return ElevatedButton(
+                      onPressed: state.isLoading
+                          ? null
+                          : () {
+                              context.read<LoginCubit>().login(
+                                    email: emailController.text.trim(),
+                                    password: passwordController.text.trim(),
+                                  );
                             },
-                            icon: const Icon(Icons.arrow_back_ios)),
-                        const Text(
-                          '2FA Verification',
-                          style: TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    const Text('Hello, Welcome back to your account.'),
-                    const SizedBox(height: 20),
-
-                    // Toggle Email / Phone
-                    BlocBuilder<LoginBloc, LoginState>(
-                      builder: (context, state) {
-                        return Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => context.read<LoginBloc>().add(
-                                        ToggleMethod(toEmail: true),
-                                      ),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: state.method == LoginMethod.email
-                                          ? Colors.white
-                                          : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: const Center(child: Text('Email')),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => context.read<LoginBloc>().add(
-                                        ToggleMethod(toEmail: false),
-                                      ),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: state.method == LoginMethod.phone
-                                          ? Colors.white
-                                          : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: const Center(child: Text('Phone')),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // Input field
-                    BlocBuilder<LoginBloc, LoginState>(
-                      builder: (context, state) {
-                        final isPhone = state.method == LoginMethod.phone;
-                        return TextField(
-                          keyboardType: isPhone
-                              ? TextInputType.phone
-                              : TextInputType.emailAddress,
-                          onChanged: (v) =>
-                              context.read<LoginBloc>().add(InputChanged(v)),
-                          decoration: InputDecoration(
-                            hintText: isPhone
-                                ? 'Input your phone number'
-                                : 'Input your email',
-                            prefixIcon: isPhone
-                                ? Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Image.asset(
-                                      'assets/images/flag.png',
-                                      width: 28,
-                                    ),
-                                  )
-                                : null,
-                            suffixIcon: state.input.isNotEmpty
-                                ? const Icon(
-                                    Icons.check_circle,
-                                    color: Colors.green,
-                                  )
-                                : null,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-
-                    const SizedBox(height: 40),
-
-                    // Request OTP button
-                    BlocBuilder<LoginBloc, LoginState>(
-                      builder: (context, state) {
-                        return ElevatedButton(
-                          onPressed: state.isSubmitting
-                              ? null
-                              : () => context.read<LoginBloc>().add(
-                                    RequestOtpPressed(),
-                                  ),
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 48),
-                          ),
-                          child: state.isSubmitting
-                              ? const CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                )
-                              : const Text('Request OTP'),
-                        );
-                      },
-                    ),
-
-                    const SizedBox(height: 40),
-                    Row(
-                      children: const [
-                        Expanded(child: Divider()),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          child: Text('Sign in with Google'),
-                        ),
-                        Expanded(child: Divider()),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-                    Container(
-                      height: 45,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black12),
-                        borderRadius: BorderRadius.circular(12),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 48),
                       ),
-                      child: const Center(child: Text('Google')),
-                    ),
+                      child: state.isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            )
+                          : const Text('Login'),
+                    );
+                  },
+                ),
 
-                    const SizedBox(height: 40),
-                    Row(
-                      children: [
-                        const Text(
-                          'No account yet? ',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'Create an account',
-                            style: TextStyle(color: Colors.red, fontSize: 12),
-                          ),
-                        ),
-                      ],
+                const SizedBox(height: 24),
+
+                Row(
+                  children: [
+                    const Text('No account?'),
+                    TextButton(
+                      onPressed: () {
+                        context.router.push(const RegisterRoute());
+                      },
+                      child: const Text('Register'),
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
           ),
         ),

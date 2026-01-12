@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:internship_demo/ui/screens/home/home_screen.dart';
 import 'package:internship_demo/ui/screens/login/login_screen.dart';
 import 'package:internship_demo/ui/screens/otp_verify/otp_screen.dart';
 import 'package:internship_demo/ui/screens/register/register_screen.dart';
@@ -19,5 +20,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: RegisterRoute.page, path: '/register'),
     AutoRoute(page: VerificationRoute.page, path: '/verify'),
     AutoRoute(page: OtpRoute.page, path: '/otp'),
+    AutoRoute(page: HomeRoute.page, path: '/home'),
   ];
 }

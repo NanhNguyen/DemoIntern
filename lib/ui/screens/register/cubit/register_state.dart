@@ -1,12 +1,17 @@
-abstract class RegisterState {}
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:internship_demo/ui/cubit/common/base_state.dart';
 
-class RegisterInitial extends RegisterState {}
 
-class RegisterLoading extends RegisterState {}
+part 'register_state.freezed.dart';
 
-class RegisterSuccess extends RegisterState {}
+@freezed
+abstract class RegisterState extends BaseState with _$RegisterState {
 
-class RegisterFailure extends RegisterState {
-  final String message;
-  RegisterFailure(this.message);
+  const RegisterState._();
+   
+  const factory RegisterState({
+    @Default(false) bool isSuccess,
+    @Default(false) bool isLoading,
+    String? errorMessage,
+  }) = _RegisterState;
 }

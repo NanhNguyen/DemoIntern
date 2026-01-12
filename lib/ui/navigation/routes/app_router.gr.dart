@@ -11,10 +11,26 @@
 part of 'app_router.dart';
 
 /// generated route for
+/// [HomeScreen]
+class HomeRoute extends PageRouteInfo<void> {
+  const HomeRoute({List<PageRouteInfo>? children})
+      : super(HomeRoute.name, initialChildren: children);
+
+  static const String name = 'HomeRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const HomeScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [IntroScreen]
 class IntroRoute extends PageRouteInfo<void> {
   const IntroRoute({List<PageRouteInfo>? children})
-    : super(IntroRoute.name, initialChildren: children);
+      : super(IntroRoute.name, initialChildren: children);
 
   static const String name = 'IntroRoute';
 
@@ -30,7 +46,7 @@ class IntroRoute extends PageRouteInfo<void> {
 /// [LoginScreen]
 class LoginRoute extends PageRouteInfo<void> {
   const LoginRoute({List<PageRouteInfo>? children})
-    : super(LoginRoute.name, initialChildren: children);
+      : super(LoginRoute.name, initialChildren: children);
 
   static const String name = 'LoginRoute';
 
@@ -51,10 +67,10 @@ class OtpRoute extends PageRouteInfo<OtpRouteArgs> {
     required bool isPhone,
     List<PageRouteInfo>? children,
   }) : super(
-         OtpRoute.name,
-         args: OtpRouteArgs(key: key, contact: contact, isPhone: isPhone),
-         initialChildren: children,
-       );
+          OtpRoute.name,
+          args: OtpRouteArgs(key: key, contact: contact, isPhone: isPhone),
+          initialChildren: children,
+        );
 
   static const String name = 'OtpRoute';
 
@@ -102,7 +118,7 @@ class OtpRouteArgs {
 /// [RegisterScreen]
 class RegisterRoute extends PageRouteInfo<void> {
   const RegisterRoute({List<PageRouteInfo>? children})
-    : super(RegisterRoute.name, initialChildren: children);
+      : super(RegisterRoute.name, initialChildren: children);
 
   static const String name = 'RegisterRoute';
 
@@ -118,7 +134,7 @@ class RegisterRoute extends PageRouteInfo<void> {
 /// [VerificationScreen]
 class VerificationRoute extends PageRouteInfo<void> {
   const VerificationRoute({List<PageRouteInfo>? children})
-    : super(VerificationRoute.name, initialChildren: children);
+      : super(VerificationRoute.name, initialChildren: children);
 
   static const String name = 'VerificationRoute';
 
